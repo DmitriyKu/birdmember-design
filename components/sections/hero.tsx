@@ -11,26 +11,35 @@ export function Hero() {
     const canvas = canvasRef.current
     if (!canvas) return
 
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    let animationFrameId = 0
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5)
+
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      canvas.width = Math.floor(window.innerWidth * pixelRatio)
+      canvas.height = Math.floor(window.innerHeight * pixelRatio)
+      canvas.style.width = `${window.innerWidth}px`
+      canvas.style.height = `${window.innerHeight}px`
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
     }
     resizeCanvas()
-    window.addEventListener('resize', resizeCanvas)
+    window.addEventListener('resize', resizeCanvas, { passive: true })
 
     const flightPaths = [
-      { start: { x: 0.1, y: 0.3 }, end: { x: 0.9, y: 0.5 }, progress: 0, speed: 0.003 },
-      { start: { x: 0.8, y: 0.2 }, end: { x: 0.2, y: 0.7 }, progress: 0.3, speed: 0.004 },
-      { start: { x: 0.5, y: 0.1 }, end: { x: 0.6, y: 0.8 }, progress: 0.6, speed: 0.0035 },
-      { start: { x: 0.15, y: 0.6 }, end: { x: 0.85, y: 0.3 }, progress: 0.15, speed: 0.0025 },
-      { start: { x: 0.7, y: 0.7 }, end: { x: 0.3, y: 0.2 }, progress: 0.45, speed: 0.003 },
+      { start: { x: 0.1, y: 0.3 }, end: { x: 0.9, y: 0.5 }, progress: 0, speed: reducedMotion ? 0 : 0.003 },
+      { start: { x: 0.8, y: 0.2 }, end: { x: 0.2, y: 0.7 }, progress: 0.3, speed: reducedMotion ? 0 : 0.004 },
+      { start: { x: 0.5, y: 0.1 }, end: { x: 0.6, y: 0.8 }, progress: 0.6, speed: reducedMotion ? 0 : 0.0035 },
+      { start: { x: 0.15, y: 0.6 }, end: { x: 0.85, y: 0.3 }, progress: 0.15, speed: reducedMotion ? 0 : 0.0025 },
+      { start: { x: 0.7, y: 0.7 }, end: { x: 0.3, y: 0.2 }, progress: 0.45, speed: reducedMotion ? 0 : 0.003 },
     ]
 
     const dots: { x: number; y: number; radius: number; alpha: number }[] = []
-    for (let i = 0; i < 100; i++) {
+    const dotCount = window.innerWidth < 768 ? 55 : 100
+
+    for (let i = 0; i < dotCount; i++) {
       dots.push({
         x: Math.random(),
         y: Math.random(),
@@ -39,21 +48,24 @@ export function Hero() {
       })
     }
 
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+    const drawFrame = () => {
+      const width = window.innerWidth
+      const height = window.innerHeight
+
+      ctx.clearRect(0, 0, width, height)
 
       dots.forEach((dot) => {
         ctx.beginPath()
-        ctx.arc(dot.x * canvas.width, dot.y * canvas.height, dot.radius, 0, Math.PI * 2)
+        ctx.arc(dot.x * width, dot.y * height, dot.radius, 0, Math.PI * 2)
         ctx.fillStyle = `rgba(58, 143, 206, ${dot.alpha})`
         ctx.fill()
       })
 
       flightPaths.forEach((path) => {
-        const startX = path.start.x * canvas.width
-        const startY = path.start.y * canvas.height
-        const endX = path.end.x * canvas.width
-        const endY = path.end.y * canvas.height
+        const startX = path.start.x * width
+        const startY = path.start.y * height
+        const endX = path.end.x * width
+        const endY = path.end.y * height
         const midX = (startX + endX) / 2
         const midY = Math.min(startY, endY) - 100
 
@@ -87,14 +99,22 @@ export function Hero() {
         path.progress += path.speed
         if (path.progress > 1) path.progress = 0
       })
-
-      requestAnimationFrame(animate)
     }
 
-    animate()
+    const animate = () => {
+      drawFrame()
+      animationFrameId = requestAnimationFrame(animate)
+    }
+
+    if (reducedMotion) {
+      drawFrame()
+    } else {
+      animate()
+    }
 
     return () => {
       window.removeEventListener('resize', resizeCanvas)
+      cancelAnimationFrame(animationFrameId)
     }
   }, [])
 
