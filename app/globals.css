@@ -178,6 +178,44 @@ html {
   scroll-behavior: smooth;
 }
 
+@keyframes bm-cloud-hole-grow {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.bm-cloud-hole {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: bm-cloud-hole-grow 2400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes bm-cloud-fade {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.985);
+    filter: blur(2px);
+  }
+}
+
+.bm-cloud-dissolve {
+  -webkit-mask: url(#bm-cloud-mask);
+  mask: url(#bm-cloud-mask);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  animation: bm-cloud-fade 650ms ease-out forwards;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

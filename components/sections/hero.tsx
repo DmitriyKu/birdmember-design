@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
+import { LaunchCountdown } from '@/components/hero/launch-countdown'
 
 export function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -168,6 +169,10 @@ export function Hero() {
           <Button size="lg" onClick={scrollToWaitlist} className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-full font-semibold shadow-lg hover:shadow-primary/50 hover:shadow-xl transition-all duration-300 animate-glow">
             Apply for early access
           </Button>
+        </div>
+
+        <div className="mb-6">
+          <LaunchCountdown />
         </div>
 
         <p className="text-white/60 text-sm">Launching soon on iOS & Android</p>

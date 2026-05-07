@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import { InitialSplash } from '@/components/splash/initial-splash'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -67,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${montserrat.variable} bg-background`}>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        {children}
+        <InitialSplash>{children}</InitialSplash>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
