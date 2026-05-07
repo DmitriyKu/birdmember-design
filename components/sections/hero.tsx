@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
-import { LaunchCountdown } from '@/components/hero/launch-countdown'
+import { LaunchCountdown } from '@/components/sections/hero/launch-countdown'
 
 export function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
