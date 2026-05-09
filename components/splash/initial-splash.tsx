@@ -154,7 +154,6 @@ export function InitialSplash({ children }: { children: React.ReactNode }) {
   const showOverlay = phase !== 'hidden'
   const overlayHiding = phase === 'hiding'
   const showClouds = overlayHiding && hideStep === 'clouds'
-  const logoHiding = overlayHiding && hideStep === 'logo'
 
   return (
     <div className={showOverlay ? 'overflow-hidden' : undefined}>
@@ -220,4 +219,3 @@ export function InitialSplash({ children }: { children: React.ReactNode }) {
     </div>
   )
 }
-
