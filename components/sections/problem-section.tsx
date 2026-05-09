@@ -100,44 +100,6 @@ function MobileStory() {
   return <MobileCinematicCarousel />
 }
 
-function MobileBeforePanel() {
-  return (
-    <div className="relative min-h-[360px] rounded-[28px] overflow-hidden shadow-2xl shadow-black/25">
-      <Image
-        src="/layover-lonely.png"
-        alt="Crew member alone during layover"
-        fill
-        className="object-cover"
-        style={{ objectPosition: 'center' }}
-        priority={false}
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10" aria-hidden="true" />
-      <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md px-3 py-2 text-white/80 text-xs font-medium">
-        Most layovers
-      </div>
-    </div>
-  )
-}
-
-function MobileAfterPanel() {
-  return (
-    <div className="relative min-h-[360px] rounded-[28px] overflow-hidden shadow-2xl shadow-black/25">
-      <Image
-        src="/crew-dinner-table.png"
-        alt="Crew dinner after Birdmember"
-        fill
-        className="object-cover"
-        style={{ objectPosition: 'center' }}
-        priority={false}
-      />
-      <div className="absolute inset-0 bg-gradient-to-l from-black/45 via-black/20 to-black/10" aria-hidden="true" />
-      <div className="absolute right-5 top-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md px-3 py-2 text-white/80 text-xs font-medium">
-        With Birdmember
-      </div>
-    </div>
-  )
-}
-
 function StatsRow() {
   return (
     <>
