@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 
 type Phase = 'visible' | 'hiding' | 'hidden'
@@ -125,7 +125,11 @@ function CloudDissolveCanvas({ active, durationMs }: { active: boolean; duration
 }
 
 export function InitialSplash({ children }: { children: React.ReactNode }) {
-  const reducedMotion = useMemo(() => prefersReducedMotion(), [])
+  const [reducedMotion, setReducedMotion] = useState(false)
+
+useEffect(() => {
+  setReducedMotion(prefersReducedMotion())
+}, [])
   const [phase, setPhase] = useState<Phase>('visible')
   const [hideStep, setHideStep] = useState<HideStep>('logo')
 
