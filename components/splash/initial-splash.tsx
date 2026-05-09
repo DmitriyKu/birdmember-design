@@ -180,7 +180,7 @@ export function InitialSplash({ children }: { children: React.ReactNode }) {
               height={386}
               priority
               className={[
-                'h-56 w-auto md:h-80',
+                'h-28 w-auto md:h-40',
                 'transition-[opacity,transform,filter] ease-out',
                 reducedMotion ? 'transition-none' : '',
                 overlayHiding

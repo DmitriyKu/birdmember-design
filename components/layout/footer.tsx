@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 export function Footer() {
   return (
@@ -6,15 +7,15 @@ export function Footer() {
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
-          <a href="#" className="flex items-center">
+          <Link href="/" className="flex items-center">
             <Image
-              src="/birdmember-logo.png"
-              alt="Birdmember"
-              width={240}
-              height={62}
-              className="h-10 w-auto"
+              src="/birdmember-footer-logo.png"
+              alt="Birdmember — only flight crew"
+              width={1024}
+              height={282}
+              className="h-14 w-auto max-w-full md:h-16"
             />
-          </a>
+          </Link>
 
           {/* Tagline */}
           <p className="text-white/60 text-sm">
@@ -23,12 +24,12 @@ export function Footer() {
 
           {/* Links */}
           <div className="flex items-center gap-6 text-sm">
-            <a href="#" className="text-white/60 hover:text-white transition-colors">
+            <Link href="/privacy" className="text-white/60 hover:text-white transition-colors">
               Privacy
-            </a>
-            <a href="#" className="text-white/60 hover:text-white transition-colors">
+            </Link>
+            <Link href="/terms" className="text-white/60 hover:text-white transition-colors">
               Terms
-            </a>
+            </Link>
           </div>
         </div>
 

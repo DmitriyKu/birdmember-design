@@ -52,21 +52,23 @@ export function Hero() {
     const drawFrame = () => {
       const width = window.innerWidth
       const height = window.innerHeight
+      const mobileYOffset = width < 768 ? height * 0.2 : 0
+      const mobileYScale = width < 768 ? 0.8 : 1
 
       ctx.clearRect(0, 0, width, height)
 
       dots.forEach((dot) => {
         ctx.beginPath()
-        ctx.arc(dot.x * width, dot.y * height, dot.radius, 0, Math.PI * 2)
+        ctx.arc(dot.x * width, dot.y * height * mobileYScale + mobileYOffset, dot.radius, 0, Math.PI * 2)
         ctx.fillStyle = `rgba(58, 143, 206, ${dot.alpha})`
         ctx.fill()
       })
 
       flightPaths.forEach((path) => {
         const startX = path.start.x * width
-        const startY = path.start.y * height
+        const startY = path.start.y * height * mobileYScale + mobileYOffset
         const endX = path.end.x * width
-        const endY = path.end.y * height
+        const endY = path.end.y * height * mobileYScale + mobileYOffset
         const midX = (startX + endX) / 2
         const midY = Math.min(startY, endY) - 100
 
@@ -124,7 +126,10 @@ export function Hero() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden" aria-label="Hero section for airline crew networking app">
+    <section
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-14 pb-10 md:py-0"
+      aria-label="Hero section for airline crew networking app"
+    >
       <canvas ref={canvasRef} className="absolute inset-0 z-0" aria-hidden="true" />
 
       <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none" aria-hidden="true">
@@ -134,51 +139,72 @@ export function Hero() {
       </div>
 
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute top-[15%] left-[10%] animate-float">
-          <ProfileCard role="Pilot" airline="Emirates" />
-        </div>
-        <div className="absolute top-[25%] right-[8%] animate-float-delayed">
-          <ProfileCard role="Cabin Crew" airline="British Airways" />
-        </div>
-        <div className="absolute bottom-[25%] left-[15%] animate-float-delayed-2 hidden md:block">
-          <ProfileCard role="Captain" airline="Lufthansa" />
-        </div>
-        <div className="absolute bottom-[20%] right-[12%] animate-float hidden lg:block">
-          <ProfileCard role="Cabin Crew" airline="Singapore Airlines" />
+        {/* Desktop floating cards (unchanged) */}
+        <div className="hidden md:block">
+          <div className="absolute top-[15%] left-[10%] animate-float">
+            <ProfileCard role="Pilot" airline="Emirates" />
+          </div>
+          <div className="absolute top-[25%] right-[8%] animate-float-delayed">
+            <ProfileCard role="Cabin Crew" airline="British Airways" />
+          </div>
+          <div className="absolute bottom-[25%] left-[15%] animate-float-delayed-2">
+            <ProfileCard role="Captain" airline="Lufthansa" />
+          </div>
+          <div className="absolute bottom-[20%] right-[12%] animate-float hidden lg:block">
+            <ProfileCard role="Cabin Crew" airline="Singapore Airlines" />
+          </div>
         </div>
       </div>
 
-      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 mb-8">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          <span className="text-sm font-medium text-white">Crew only. Access is limited.</span>
+      <div className="relative z-10 w-full px-4 max-w-5xl mx-auto text-center md:text-center">
+        <div className="min-h-[calc(100vh-96px)] md:min-h-0 flex flex-col items-center justify-between md:block">
+          {/* Top group (mobile: closer to top) */}
+          <div className="w-full">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4 md:mb-6 text-balance">
+              Layovers are better when you know who&apos;s nearby.
+            </h1>
+
+            <p className="text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto mb-6 md:mb-10 leading-relaxed text-balance">
+              Birdmember helps verified pilots and cabin crew connect instantly in every layover city.
+            </p>
+
+            {/* Mobile-only floating nearby cards (between subtitle and CTA) */}
+            <div className="md:hidden relative w-full max-w-[360px] h-[170px] mx-auto pointer-events-none">
+              {/* +15% of container height (~26px) vs previous tops */}
+              <div className="absolute left-0 top-[154px] animate-float scale-[0.68] origin-top-left">
+                <ProfileCard role="Pilot" airline="Emirates" />
+              </div>
+              <div className="absolute right-0 top-[122px] animate-float-delayed scale-[0.68] origin-top-right">
+                <ProfileCard role="Cabin Crew" airline="British Airways" />
+              </div>
+              <div className="absolute left-1/2 -translate-x-1/2 top-[26px] animate-float-delayed-2 scale-[0.64] origin-top">
+                <ProfileCard role="F/A" airline="Lufthansa" />
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom group (mobile: pinned lower) */}
+          <div className="w-full pb-2 md:pb-0">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6 md:mb-8">
+              <Button
+                size="lg"
+                onClick={scrollToWaitlist}
+                className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-full font-semibold shadow-lg hover:shadow-primary/50 hover:shadow-xl transition-all duration-300 animate-glow"
+              >
+                Apply for early access
+              </Button>
+            </div>
+
+            <div className="mb-5 md:mb-6">
+              <LaunchCountdown />
+            </div>
+
+            <p className="text-white/60 text-sm">Launching soon on iOS & Android</p>
+          </div>
         </div>
-
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 text-balance">
-          The first verified global crew network
-        </h1>
-
-        <p className="text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto mb-4 leading-relaxed">
-          No more wasted layovers.
-        </p>
-        <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto mb-10 leading-relaxed">
-          Meet verified pilots and cabin crew in your city — instantly.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-          <Button size="lg" onClick={scrollToWaitlist} className="bg-primary hover:bg-primary/90 text-white text-lg px-8 py-6 rounded-full font-semibold shadow-lg hover:shadow-primary/50 hover:shadow-xl transition-all duration-300 animate-glow">
-            Apply for early access
-          </Button>
-        </div>
-
-        <div className="mb-6">
-          <LaunchCountdown />
-        </div>
-
-        <p className="text-white/60 text-sm">Launching soon on iOS & Android</p>
       </div>
 
-      <button onClick={() => document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' })} className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/60 hover:text-white transition-colors cursor-pointer" aria-label="Scroll to next section">
+      <button onClick={() => document.getElementById('problem')?.scrollIntoView({ behavior: 'smooth' })} className="absolute bottom-3 left-1/2 -translate-x-1/2 text-white/60 hover:text-white transition-colors cursor-pointer md:bottom-8" aria-label="Scroll to next section">
         <ChevronDown className="w-8 h-8 animate-bounce" />
       </button>
     </section>

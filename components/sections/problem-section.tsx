@@ -1,10 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import { MapPin, ShieldCheck, Sparkles } from 'lucide-react'
+import { CheckCircle2, Globe, Lock, ShieldCheck, Sparkles } from 'lucide-react'
+import { animate, motion, type MotionValue, useMotionValue, useTransform } from 'framer-motion'
 import { PhoneFrame } from '@/components/sections/problem/phone-frame'
 import { StatPill } from '@/components/sections/problem/stat-pill'
 import { StoryPanel } from '@/components/sections/problem/story-panel'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 export function ProblemSection() {
   return (
@@ -95,54 +97,21 @@ function FloatingPhone() {
 }
 
 function MobileStory() {
-  return (
-    <div className="md:hidden space-y-6">
-      <MobileBeforePanel />
-
-      <div className="relative mx-auto w-[280px] rounded-[40px] border border-white/18 bg-white/8 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden">
-        <PhoneFrame compact>
-          <Image
-            src="/ui-discover-mock.png"
-            alt="Birdmember app: discover crew nearby"
-            width={468}
-            height={1024}
-            className="block w-full h-auto"
-            priority={false}
-          />
-        </PhoneFrame>
-      </div>
-
-      <MobileAfterPanel />
-    </div>
-  )
+  return <MobileCinematicCarousel />
 }
 
 function MobileBeforePanel() {
   return (
     <div className="relative min-h-[360px] rounded-[28px] overflow-hidden shadow-2xl shadow-black/25">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#072a4a] via-[#061f36] to-[#041628]" aria-hidden="true" />
-      <div className="absolute inset-0 px-7 py-8" aria-hidden="true">
-        <div className="relative h-full w-full border border-white/10 bg-black/10">
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full bg-white/10 blur-3xl opacity-20" />
-            <div className="absolute top-[22%] left-[14%] w-2 h-2 rounded-full bg-secondary/80 blur-[1px] opacity-70" />
-            <div className="absolute top-[30%] left-[28%] w-1.5 h-1.5 rounded-full bg-white/80 blur-[1px] opacity-55" />
-            <div className="absolute top-[36%] left-[20%] w-1 h-1 rounded-full bg-primary/80 blur-[1px] opacity-55" />
-            <div className="absolute bottom-[22%] left-[22%] w-2 h-2 rounded-full bg-white/60 blur-[1px] opacity-45" />
-            <div className="absolute bottom-[18%] left-[40%] w-1.5 h-1.5 rounded-full bg-primary/70 blur-[1px] opacity-45" />
-          </div>
-          <div className="absolute inset-y-0 left-0 w-[18%] bg-black/25" />
-          <div className="absolute bottom-8 left-8">
-            <div className="relative">
-              <div className="w-14 h-16 rounded-[18px] bg-black/45 blur-[0.2px]" />
-              <div className="absolute -right-5 bottom-3 w-9 h-5 rounded-full bg-primary/30 blur-xl opacity-70" />
-              <div className="absolute -right-3 bottom-4 w-3 h-5 rounded-sm bg-white/15 border border-white/10" />
-            </div>
-          </div>
-          <div className="absolute -top-[30%] left-[-30%] w-[160%] h-[80%] rotate-[10deg] bg-gradient-to-b from-white/10 via-white/0 to-transparent opacity-25" />
-        </div>
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-black/10" aria-hidden="true" />
+      <Image
+        src="/layover-lonely.png"
+        alt="Crew member alone during layover"
+        fill
+        className="object-cover"
+        style={{ objectPosition: 'center' }}
+        priority={false}
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10" aria-hidden="true" />
       <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 backdrop-blur-md px-3 py-2 text-white/80 text-xs font-medium">
         Most layovers
       </div>
@@ -171,11 +140,346 @@ function MobileAfterPanel() {
 
 function StatsRow() {
   return (
-    <div className="mt-10 md:mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 text-white/75">
-      <StatPill icon={<MapPin className="w-4 h-4" aria-hidden="true" />} label="150+ cities" />
-      <StatPill icon={<span className="w-4 h-4 rounded-full border border-white/20 inline-block" aria-hidden="true" />} label="20K+ crew members" />
-      <StatPill icon={<ShieldCheck className="w-4 h-4" aria-hidden="true" />} label="Verified crew only" />
-      <StatPill icon={<Sparkles className="w-4 h-4" aria-hidden="true" />} label="Real connections" />
+    <>
+      {/* Desktop (unchanged) */}
+      <div className="hidden md:grid mt-10 md:mt-12 grid-cols-2 md:grid-cols-4 gap-4 text-white/75">
+        <StatPill icon={<Globe className="w-4 h-4" aria-hidden="true" />} label="Worldwide layovers" />
+        <StatPill icon={<Lock className="w-4 h-4" aria-hidden="true" />} label="Crew-only access" />
+        <StatPill icon={<ShieldCheck className="w-4 h-4" aria-hidden="true" />} label="Verified crew only" />
+        <StatPill icon={<Sparkles className="w-4 h-4" aria-hidden="true" />} label="Real connections" />
+      </div>
+
+      {/* Mobile: lightweight chips */}
+      <div className="md:hidden mt-10">
+        <MobileStatsChips />
+      </div>
+    </>
+  )
+}
+
+type MobileSlide = {
+  key: string
+  kind: 'image' | 'phone'
+  image?: { src: string; alt: string }
+}
+
+function MobileCinematicCarousel() {
+  const slides: MobileSlide[] = useMemo(
+    () => [
+      {
+        key: 'lonely',
+        kind: 'image',
+        image: { src: '/layover-lonely.png', alt: 'Crew member alone during layover' },
+      },
+      {
+        key: 'discover',
+        kind: 'phone',
+      },
+      {
+        key: 'together',
+        kind: 'image',
+        image: { src: '/crew-dinner-table.png', alt: 'Crew connection after Birdmember' },
+      },
+    ],
+    [],
+  )
+
+  return (
+    <div className="md:hidden mt-8">
+      <MobileCarousel slides={slides} />
+    </div>
+  )
+}
+
+function MobileCarousel({ slides }: { slides: MobileSlide[] }) {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [containerW, setContainerW] = useState(0)
+  const [index, setIndex] = useState(1)
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+
+    const ro = new ResizeObserver(() => setContainerW(el.clientWidth))
+    ro.observe(el)
+    setContainerW(el.clientWidth)
+    return () => ro.disconnect()
+  }, [])
+
+  const gap = 0
+  // Tighter spacing when phone is centered so side cards sit closer
+  const overlap = index === 1 ? 52 : 34
+  // Wide enough for story photos, still shows clear side peeks (35–45%)
+  const cardW = Math.max(236, Math.min(312, Math.floor(containerW * 0.64 || 276)))
+  // Negative overlap: cards visually interlock like coverflow
+  const step = cardW - overlap + gap
+  const sidePad = Math.max(6, Math.floor((containerW - cardW) / 2))
+
+  const x = useMotionValue<number>(-index * step)
+
+  useEffect(() => {
+    const controls = animate(x, -index * step, {
+      type: 'spring',
+      stiffness: 260,
+      damping: 28,
+      mass: 0.7,
+    })
+    return () => controls.stop()
+  }, [index, step, x])
+
+  const clampIndex = (next: number) => Math.max(0, Math.min(slides.length - 1, next))
+
+  return (
+    <div ref={containerRef} className="relative">
+      <div className="relative overflow-hidden">
+        <motion.div
+          className="flex items-stretch"
+          style={{ x, paddingLeft: sidePad, paddingRight: sidePad, gap: `${gap}px` }}
+          drag="x"
+          dragElastic={0.08}
+          dragMomentum={false}
+          onDragEnd={(_, info) => {
+            const current = -x.get() / step
+            const flick = info.velocity.x
+            const moved = info.offset.x
+
+            let next = Math.round(current)
+            if (Math.abs(flick) > 650 || Math.abs(moved) > cardW * 0.18) {
+              next = flick < 0 ? Math.ceil(current) : Math.floor(current)
+            }
+
+            setIndex(clampIndex(next))
+          }}
+          aria-label="Story carousel"
+        >
+          {slides.map((slide, i) => (
+            <MobileCarouselCard
+              key={slide.key}
+              slide={slide}
+              i={i}
+              x={x}
+              step={step}
+              width={cardW}
+              overlap={overlap}
+              phoneCentered={index === 1}
+              activeIndex={index}
+              onSelect={() => setIndex(i)}
+            />
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Pagination dots */}
+      <div className="mt-6 flex items-center justify-center gap-2">
+        {slides.map((s, i) => (
+          <button
+            key={s.key}
+            type="button"
+            aria-label={`Go to slide ${i + 1}`}
+            onClick={() => setIndex(i)}
+            className={`h-2 w-2 rounded-full transition-colors ${i === index ? 'bg-white/85' : 'bg-white/25 hover:bg-white/35'}`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function MobileCarouselCard({
+  slide,
+  i,
+  x,
+  step,
+  width,
+  overlap,
+  phoneCentered,
+  activeIndex,
+  onSelect,
+}: {
+  slide: MobileSlide
+  i: number
+  x: MotionValue<number>
+  step: number
+  width: number
+  overlap: number
+  phoneCentered: boolean
+  activeIndex: number
+  onSelect: () => void
+}) {
+  const current = useTransform(x, (v: number) => -v / step)
+  const offset = useTransform(current, (c) => i - c)
+
+  // Coverflow inward horizontal angle (rotateY), center stays flat; +10° vs before for sides
+  const rotateY = useTransform(offset, (o) => {
+    const a = Math.min(1, Math.abs(o))
+    if (a < 0.12) return 0
+    // Left card rotates toward center (right), right card rotates toward center (left)
+    return o < 0 ? a * 45 : a * -45
+  })
+  // Pull side cards toward the center so spacing is visibly tighter (coverflow overlap)
+  const pullX = useTransform(offset, (o) => {
+    const a = Math.min(1, Math.abs(o))
+    if (a < 0.08) return 0
+    const tight = phoneCentered ? 1.32 : 1
+    const amount = 26 * a * tight
+    return o < 0 ? amount : -amount
+  })
+  const scale = useTransform(offset, (o) => {
+    const a = Math.min(1, Math.abs(o))
+    // Smooth scale — no step threshold (avoids size “jumps” mid-swipe)
+    let base = 1 - a * 0.05
+    if (slide.kind === 'image') {
+      base *= 1 - a * 0.06
+    }
+    return base
+  })
+  const opacity = useTransform(offset, (o) => 1 - Math.min(0.28, Math.abs(o) * 0.2))
+  const blur = useTransform(offset, (o) => Math.min(0.9, Math.abs(o) * 0.65))
+  const filter = useTransform(blur, (b) => `blur(${b}px)`)
+  const z = useTransform(offset, (o) => (Math.abs(o) < 0.2 ? 34 : 0))
+
+  const isActive = i === activeIndex
+
+  return (
+    <motion.button
+      type="button"
+      onClick={onSelect}
+      className="relative shrink-0 text-left"
+      style={{ width, marginLeft: i === 0 ? 0 : -overlap }}
+      aria-current={isActive ? 'true' : undefined}
+    >
+      <motion.div
+        className="relative flex h-[500px] w-full items-center justify-center overflow-visible bg-transparent"
+        style={{
+          // Ensure 3D is visible even when the track is translating.
+          transformPerspective: 1200,
+          transformStyle: 'preserve-3d',
+          transformOrigin: 'center center',
+          rotateY,
+          x: pullX,
+          scale,
+          z,
+          opacity,
+          filter,
+          boxShadow: 'none',
+        }}
+      >
+        {/* Card surface: slightly shorter when active; spring height avoids harsh jumps */}
+        <motion.div
+          className="relative w-full overflow-visible rounded-[28px] will-change-[height]"
+          initial={false}
+          animate={{ height: isActive ? 458 : 482 }}
+          transition={{ type: 'spring', stiffness: 380, damping: 34, mass: 0.85 }}
+        >
+          {/* Inner clip layer so 3D transforms don't get cut off */}
+          <div className="absolute inset-0 rounded-[28px] overflow-hidden">
+            {slide.kind === 'image' && slide.image ? (
+              <>
+                <Image
+                  src={slide.image.src}
+                  alt={slide.image.alt}
+                  fill
+                  className="object-cover"
+                  style={{ objectPosition: 'center' }}
+                  priority={false}
+                />
+                {/* Match desktop StoryPanel copy */}
+                {slide.key === 'lonely' ? (
+                  <>
+                    <div
+                      className="pointer-events-none absolute inset-x-0 bottom-0 top-[38%] bg-gradient-to-t from-black/80 via-black/35 to-transparent"
+                      aria-hidden="true"
+                    />
+                    <div className="pointer-events-none absolute left-3 top-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-[10px] font-medium text-white/80 backdrop-blur-md sm:left-4 sm:top-4 sm:px-3 sm:py-2 sm:text-xs">
+                      Most layovers
+                    </div>
+                    <div className="pointer-events-none absolute bottom-3 left-3 right-3 z-[1] sm:bottom-4 sm:left-4 sm:right-4">
+                      <ul className="space-y-1.5 text-[11px] text-white/80 sm:space-y-2 sm:text-sm">
+                        {['Long hours alone', 'No one from your world', 'Another night in the hotel'].map((item) => (
+                          <li key={item} className="flex items-center gap-1.5 sm:gap-2">
+                            <span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-[8px] text-white/70 sm:h-4 sm:w-4 sm:text-[10px]">
+                              ×
+                            </span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-2 text-[11px] font-medium text-white/70 sm:mt-4 sm:text-sm">Layovers can feel isolating.</p>
+                    </div>
+                  </>
+                ) : null}
+                {slide.key === 'together' ? (
+                  <>
+                    <div
+                      className="pointer-events-none absolute inset-x-0 bottom-0 top-[38%] bg-gradient-to-t from-black/80 via-black/35 to-transparent"
+                      aria-hidden="true"
+                    />
+                    <div className="pointer-events-none absolute right-3 top-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-2.5 py-1.5 text-[10px] font-medium text-white/80 backdrop-blur-md sm:right-4 sm:top-4 sm:px-3 sm:py-2 sm:text-xs">
+                      With Birdmember
+                    </div>
+                    <div className="pointer-events-none absolute bottom-3 left-3 right-3 z-[1] text-right sm:bottom-4 sm:left-4 sm:right-4">
+                      <ul className="space-y-1.5 text-[11px] text-white/80 sm:space-y-2 sm:text-sm">
+                        {['Crew you can trust', 'Plans that happen', 'Memories that stay'].map((item) => (
+                          <li key={item} className="flex items-center justify-end gap-1.5 sm:gap-2">
+                            <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-green-400 sm:h-4 sm:w-4" aria-hidden="true" />
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-2 text-[11px] font-medium text-white/80 sm:mt-4 sm:text-sm">
+                        Layovers you&apos;ll actually look forward to.
+                      </p>
+                    </div>
+                  </>
+                ) : null}
+              </>
+            ) : null}
+          </div>
+
+          {/* Phone UI (center card content) */}
+          {slide.kind === 'phone' ? (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative w-[170px]">
+                <PhoneFrame compact>
+                  <Image
+                    src="/ui-discover-mock.png"
+                    alt="Birdmember app: discover crew nearby"
+                    width={468}
+                    height={1024}
+                    className="block w-full h-auto"
+                    priority={false}
+                  />
+                </PhoneFrame>
+              </div>
+            </div>
+          ) : null}
+        </motion.div>
+      </motion.div>
+    </motion.button>
+  )
+}
+
+function MobileStatsChips() {
+  const chips = [
+    { label: 'Worldwide layovers', icon: <Globe className="w-4 h-4" aria-hidden="true" /> },
+    { label: 'Crew-only access', icon: <Lock className="w-4 h-4" aria-hidden="true" /> },
+    { label: 'Verified crew only', icon: <ShieldCheck className="w-4 h-4" aria-hidden="true" /> },
+    { label: 'Real connections', icon: <Sparkles className="w-4 h-4" aria-hidden="true" /> },
+  ]
+
+  return (
+    <div className="mt-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 [grid-auto-rows:1fr]">
+        {chips.map((c) => (
+          <div
+            key={c.label}
+            className="flex h-full min-h-[4.75rem] w-full items-center justify-center gap-2 rounded-full border border-white/14 bg-white/5 px-3 py-2 text-center text-white/70 text-sm shadow-lg shadow-black/10 backdrop-blur-md sm:min-h-[3.5rem]"
+          >
+            <span className="shrink-0">{c.icon}</span>
+            <span className="leading-snug text-balance">{c.label}</span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
