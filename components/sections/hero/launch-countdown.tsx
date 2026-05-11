@@ -21,14 +21,16 @@ function getParts(target: Date) {
 
 export function LaunchCountdown() {
   const target = useMemo(() => new Date('2026-07-01T00:00:00'), [])
-  const [parts, setParts] = useState(() => getParts(target))
+  const [parts, setParts] = useState<ReturnType<typeof getParts> | null>(null)
 
   useEffect(() => {
+    setParts(getParts(target))
+
     const id = window.setInterval(() => setParts(getParts(target)), 250)
     return () => window.clearInterval(id)
   }, [target])
 
-  if (parts.totalMs <= 0) return null
+  if (!parts || parts.totalMs <= 0) return null
 
   return (
     <div className="w-full max-w-md mx-auto">
