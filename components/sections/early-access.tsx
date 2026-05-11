@@ -46,7 +46,9 @@ export function EarlyAccess() {
                 </label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="your@email.com"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
@@ -55,15 +57,15 @@ export function EarlyAccess() {
                 />
               </div>
 
-              <div>
-                <label className="block text-white font-medium mb-2">
+              <fieldset>
+                <legend className="block text-white font-medium mb-2">
                   Role
-                </label>
+                </legend>
                 <div className="grid grid-cols-2 gap-4">
                   <RoleButton active={role === 'pilot'} icon="✈️" label="Pilot" onClick={() => setRole('pilot')} />
                   <RoleButton active={role === 'cabin-crew'} icon="👤" label="Cabin Crew" onClick={() => setRole('cabin-crew')} />
                 </div>
-              </div>
+              </fieldset>
 
               <Button
                 type="submit"
@@ -109,12 +111,13 @@ function RoleButton({ active, icon, label, onClick }: { active: boolean; icon: s
   return (
     <button
       type="button"
+      aria-pressed={active}
       onClick={onClick}
       className={`p-4 rounded-xl border transition-all duration-300 text-left ${
         active ? 'bg-primary/20 border-primary text-white' : 'bg-white/5 border-white/20 text-white/80 hover:border-white/40'
       }`}
     >
-      <span className="text-2xl mb-1 block">{icon}</span>
+      <span className="text-2xl mb-1 block" aria-hidden="true">{icon}</span>
       <span className="font-medium">{label}</span>
     </button>
   )
