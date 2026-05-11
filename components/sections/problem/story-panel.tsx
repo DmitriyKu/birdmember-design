@@ -20,6 +20,7 @@ export function StoryPanel({ variant }: StoryPanelProps) {
           src={isBefore ? '/layover-lonely.png' : '/crew-dinner-table.png'}
           alt=""
           fill
+          sizes="(min-width: 768px) 50vw, 100vw"
           className="object-cover"
           style={{
             objectPosition: 'center',
