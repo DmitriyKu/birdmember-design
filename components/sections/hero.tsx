@@ -139,19 +139,26 @@ export function Hero() {
       </div>
 
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        {/* Desktop floating cards (unchanged) */}
         <div className="hidden md:block">
-          <div className="absolute top-[15%] left-[10%] animate-float">
-            <ProfileCard role="Pilot" airline="Emirates" />
+          <div className="absolute top-[12%] left-[4%] animate-float min-[1200px]:top-[15%] min-[1200px]:left-[10%]">
+            <div className="origin-top-left md:scale-95 min-[1200px]:scale-100">
+              <ProfileCard role="Pilot" airline="Emirates" />
+            </div>
           </div>
-          <div className="absolute top-[25%] right-[8%] animate-float-delayed">
-            <ProfileCard role="Cabin Crew" airline="British Airways" />
+          <div className="absolute top-[18%] right-[3%] animate-float-delayed min-[1200px]:top-[25%] min-[1200px]:right-[8%]">
+            <div className="origin-top-right md:scale-95 min-[1200px]:scale-100">
+              <ProfileCard role="Cabin Crew" airline="British Airways" />
+            </div>
           </div>
-          <div className="absolute bottom-[25%] left-[15%] animate-float-delayed-2">
-            <ProfileCard role="Captain" airline="Lufthansa" />
+          <div className="absolute bottom-[25%] left-[15%] hidden animate-float-delayed-2 min-[1200px]:block">
+            <div className="origin-bottom-left min-[1200px]:scale-100">
+              <ProfileCard role="Captain" airline="Lufthansa" />
+            </div>
           </div>
-          <div className="absolute bottom-[20%] right-[12%] animate-float hidden lg:block">
-            <ProfileCard role="Cabin Crew" airline="Singapore Airlines" />
+          <div className="absolute bottom-[20%] right-[12%] hidden animate-float min-[1200px]:block">
+            <div className="origin-bottom-right min-[1200px]:scale-100">
+              <ProfileCard role="Cabin Crew" airline="Singapore Airlines" />
+            </div>
           </div>
         </div>
       </div>
@@ -164,28 +171,45 @@ export function Hero() {
               Layovers are better when you know who&apos;s nearby.
             </h1>
 
-            <p className="text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto mb-6 md:mb-10 leading-relaxed text-balance">
+            <p className="text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto mb-6 max-[1199px]:md:mb-5 md:mb-10 leading-relaxed text-balance">
               Birdmember helps verified pilots and cabin crew connect instantly in every layover city.
             </p>
 
-            {/* Mobile-only floating nearby cards (between subtitle and CTA) */}
-            <div className="md:hidden relative w-full max-w-[360px] h-[170px] mx-auto pointer-events-none">
-              {/* +15% of container height (~26px) vs previous tops */}
-              <div className="absolute left-0 top-[154px] animate-float scale-[0.68] origin-top-left">
-                <ProfileCard role="Pilot" airline="Emirates" />
+            {/* Tablet third card: centered below subheadline, above CTA */}
+            <div
+              className="mb-5 hidden justify-center pointer-events-none md:flex min-[1200px]:hidden lg:mb-6"
+              aria-hidden="true"
+            >
+              <div className="animate-float-delayed-2">
+                <div className="origin-center scale-90 lg:scale-95">
+                  <ProfileCard role="Captain" airline="Lufthansa" />
+                </div>
               </div>
-              <div className="absolute right-0 top-[122px] animate-float-delayed scale-[0.68] origin-top-right">
-                <ProfileCard role="Cabin Crew" airline="British Airways" />
+            </div>
+
+            {/* Mobile floating cards */}
+            <div className="relative mx-auto mb-2 h-24 min-[390px]:h-[8.5rem] min-[414px]:mb-4 min-[414px]:h-[16rem] w-full max-w-[340px] min-[414px]:max-w-[22rem] pointer-events-none md:hidden">
+              <div className="absolute left-1 top-0 animate-float origin-top-left min-[414px]:left-[5%]">
+                <div className="scale-[0.6] min-[414px]:scale-[0.58]">
+                  <ProfileCard role="Pilot" airline="Emirates" />
+                </div>
               </div>
-              <div className="absolute left-1/2 -translate-x-1/2 top-[26px] animate-float-delayed-2 scale-[0.64] origin-top">
-                <ProfileCard role="F/A" airline="Lufthansa" />
+              <div className="absolute right-1 top-1 animate-float-delayed origin-top-right min-[414px]:right-[3%] min-[414px]:top-[3.5rem]">
+                <div className="scale-[0.6] min-[414px]:scale-[0.58]">
+                  <ProfileCard role="Cabin Crew" airline="British Airways" />
+                </div>
+              </div>
+              <div className="absolute left-1/2 top-[4.75rem] hidden min-[390px]:block -translate-x-1/2 animate-float-delayed-2 min-[414px]:left-[10%] min-[414px]:top-[10rem] min-[414px]:translate-x-0 min-[414px]:origin-bottom-left">
+                <div className="scale-[0.55] min-[414px]:scale-[0.52]">
+                  <ProfileCard role="Captain" airline="Lufthansa" />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Bottom group (mobile: pinned lower) */}
-          <div className="w-full pb-2 md:pb-0">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6 md:mb-8">
+          <div className="w-full pb-2 md:pb-0 max-[1199px]:md:mt-6 min-[1200px]:md:mt-0">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6 md:mb-8 max-[1199px]:md:mb-10">
               <Button
                 size="lg"
                 onClick={scrollToWaitlist}
@@ -195,7 +219,7 @@ export function Hero() {
               </Button>
             </div>
 
-            <div className="mb-5 md:mb-6">
+            <div className="mb-5 md:mb-6 max-[1199px]:md:mb-8">
               <LaunchCountdown />
             </div>
 

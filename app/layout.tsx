@@ -10,13 +10,35 @@ const montserrat = Montserrat({
   weight: ['300', '400', '500', '600', '700', '800'],
 })
 
+const siteDescription =
+  'The exclusive social network for verified airline crew. Connect with pilots and cabin crew during layovers. No passengers, no outsiders. Apply for early access.'
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Birdmember',
+  url: 'https://birdmember.com',
+  logo: 'https://birdmember.com/birdmember-logo-horizontal.svg',
+}
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Birdmember',
+  url: 'https://birdmember.com',
+  description: siteDescription,
+}
+
 export const metadata: Metadata = {
+  metadataBase: new URL('https://birdmember.com'),
   title: {
     default: 'Birdmember | The First Verified Global Crew Network',
     template: '%s | Birdmember',
   },
-  description:
-    'The exclusive social network for verified airline crew. Connect with pilots and cabin crew during layovers. No passengers, no outsiders. Apply for early access.',
+  description: siteDescription,
+  alternates: {
+    canonical: '/',
+  },
   applicationName: 'Birdmember',
   keywords: [
     'airline crew app',
@@ -35,11 +57,21 @@ export const metadata: Metadata = {
     description: 'Connect with verified pilots and cabin crew during layovers. Crew only.',
     type: 'website',
     siteName: 'Birdmember',
+    url: '/',
+    images: [
+      {
+        url: '/birdmember-logo-horizontal.svg',
+        width: 3000,
+        height: 800,
+        alt: 'Birdmember',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Birdmember | The First Verified Global Crew Network',
     description: 'Connect with verified pilots and cabin crew during layovers. Crew only.',
+    images: ['/birdmember-logo-horizontal.svg'],
   },
   icons: {
     icon: [
@@ -68,6 +100,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${montserrat.variable} bg-background`}>
       <body className="font-sans antialiased" suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
         <InitialSplash>{children}</InitialSplash>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

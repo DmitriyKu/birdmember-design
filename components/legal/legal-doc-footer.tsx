@@ -7,10 +7,10 @@ export function LegalDocFooter() {
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-8">
         <Link href="/" className="flex items-center">
           <Image
-            src="/birdmember-footer-logo.png"
+            src="/birdmember-logo-horizontal.svg"
             alt="Birdmember — only flight crew"
-            width={1024}
-            height={282}
+            width={3000}
+            height={800}
             className="h-12 w-auto max-w-full md:h-14"
           />
         </Link>

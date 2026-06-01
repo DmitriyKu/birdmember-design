@@ -9,10 +9,10 @@ export function Footer() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/birdmember-footer-logo.png"
+              src="/birdmember-logo-horizontal.svg"
               alt="Birdmember — only flight crew"
-              width={1024}
-              height={282}
+              width={3000}
+              height={800}
               className="h-14 w-auto max-w-full md:h-16"
             />
           </Link>

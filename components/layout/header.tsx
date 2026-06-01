@@ -32,10 +32,10 @@ export function Header() {
         {/* Logo */}
         <a href="#" className="flex items-center">
           <Image
-            src="/birdmember-logo.png"
+            src="/birdmember-logo-horizontal.svg"
             alt="Birdmember"
-            width={280}
-            height={72}
+            width={3000}
+            height={800}
             priority
             className="h-6 w-auto"
           />

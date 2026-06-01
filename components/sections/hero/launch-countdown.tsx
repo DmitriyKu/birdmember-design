@@ -20,7 +20,7 @@ function getParts(target: Date) {
 }
 
 export function LaunchCountdown() {
-  const target = useMemo(() => new Date('2026-07-01T00:00:00'), [])
+  const target = useMemo(() => new Date('2026-08-01T00:00:00'), [])
   const [parts, setParts] = useState<ReturnType<typeof getParts> | null>(null)
 
   useEffect(() => {

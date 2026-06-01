@@ -177,10 +177,10 @@ useEffect(() => {
 
           <div className="flex flex-col items-center gap-6">
             <Image
-              src="/birdmember-splash-white.png"
+              src="/birdmember-splash-logo.svg"
               alt=""
-              width={560}
-              height={386}
+              width={3992}
+              height={2782}
               priority
               className={[
                 'h-28 w-auto md:h-40',
